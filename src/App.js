@@ -1,16 +1,18 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Test from '~/components/Test';
+import React, { Fragment } from 'react';
+import { Provider } from 'react-redux';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <Test />
-      </div>
-    );
-  }
-}
+import store from './store';
+import Routes from './routes';
+
+import GlobalStyle from './styles/global';
+
+const App = () => (
+  <Provider store={store}>
+    <Fragment>
+      <Routes />
+      <GlobalStyle />
+    </Fragment>
+  </Provider>
+);
 
 export default App;
