@@ -9,24 +9,29 @@ import MembersActions from '~/store/ducks/members';
 
 import Modal from '../Modal';
 import Button from '~/styles/components/Button';
-import { MembersList } from './styles';
+import { MembersList, Invite } from './styles';
 
 class Members extends Component {
   static propTypes = {
     closeMembersModal: PropTypes.func.isRequired,
     getMembersRequest: PropTypes.func.isRequired,
     updateMemberRequest: PropTypes.func.isRequired,
+    inviteMemberRequest: PropTypes.func.isRequired,
     members: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number,
         user: PropTypes.shape({
           name: PropTypes.string,
         }),
+        roles: PropTypes.arrayOf({
+          id: PropTypes.number,
+          name: PropTypes.string,
+        }),
       }),
     ).isRequired,
   };
 
-  state = { roles: [] };
+  state = { roles: [], invite: '' };
 
   async componentDidMount() {
     const { getMembersRequest } = this.props;
@@ -38,19 +43,44 @@ class Members extends Component {
     this.setState({ roles: response.data });
   }
 
+  handleInputChange = ({ target: { value, name } }) => {
+    this.setState({ [name]: value });
+  };
+
   handleRolesChange = (id, roles) => {
     const { updateMemberRequest } = this.props;
 
     updateMemberRequest(id, roles);
   };
 
+  handleInvite = (e) => {
+    e.preventDefault();
+
+    const { inviteMemberRequest } = this.props;
+    const { invite } = this.state;
+
+    inviteMemberRequest(invite);
+  };
+
   render() {
     const { closeMembersModal, members } = this.props;
-    const { roles } = this.state;
+    const { roles, invite } = this.state;
 
     return (
       <Modal size="big">
         <h1>Membros</h1>
+
+        <Invite onSubmit={this.handleInvite}>
+          <input
+            name="invite"
+            placeholder="Convidar para o time"
+            value={invite}
+            onChange={this.handleInputChange}
+            type="email"
+          />
+
+          <Button type="submit">Enviar</Button>
+        </Invite>
 
         <form>
           <MembersList>
