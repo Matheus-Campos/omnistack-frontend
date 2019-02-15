@@ -7,6 +7,7 @@ import ProjectsActions from '~/store/ducks/projects';
 import MembersActions from '~/store/ducks/members';
 
 import Button from '~/styles/components/Button';
+import Can from '~/components/Can';
 import Modal from '~/components/Modal';
 import Members from '~/components/Members';
 
@@ -16,7 +17,7 @@ class Projects extends Component {
   static propTypes = {
     activeTeam: PropTypes.shape({
       name: PropTypes.string,
-    }).isRequired,
+    }),
     projects: PropTypes.arrayOf(
       PropTypes.shape({
         name: PropTypes.string,
@@ -29,6 +30,10 @@ class Projects extends Component {
     openMembersModal: PropTypes.func.isRequired,
     closeProjectModal: PropTypes.func.isRequired,
     createProjectRequest: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    activeTeam: null,
   };
 
   state = {
@@ -77,7 +82,9 @@ class Projects extends Component {
           <h1>{activeTeam.name}</h1>
 
           <div>
-            <Button onClick={openProjectModal}>+ Novo</Button>
+            <Can checkPermission="projects_create">
+              <Button onClick={openProjectModal}>+ Novo</Button>
+            </Can>
             <Button onClick={openMembersModal}>Membros</Button>
           </div>
         </header>
